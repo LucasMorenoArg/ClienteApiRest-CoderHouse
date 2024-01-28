@@ -7,5 +7,5 @@ public interface ClienteService<E>{
 
     E buscarPorId(Integer id);
     E guardar(E entity);
-    E borrarPorId(Integer id);
+    boolean borrarPorId(Integer id);
 }

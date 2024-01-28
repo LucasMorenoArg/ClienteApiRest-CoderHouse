@@ -3,6 +3,7 @@ package com.example.ejercicioRest.services;
 import com.example.ejercicioRest.entities.Cliente;
 import com.example.ejercicioRest.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -21,32 +22,35 @@ public class ClienteServiceImpl implements ClienteService<Cliente>,ClienteEdad<S
     public Cliente buscarPorId(Integer id) {
 
         try {
-            Optional<Cliente> personaOptional= clienteRepository.findById(id);
-            return personaOptional.get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+            return clienteOptional.orElseThrow(() ->
+                    new IllegalArgumentException("No se encontró un cliente con el ID: " + id));
+        } catch (IllegalArgumentException e) {
+            throw e;
         }
-
-    }
+     }
     @Override
     public Cliente guardar(Cliente entity) {
 
         try {
             return clienteRepository.save(entity);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error al guardar el cliente en la base de datos", e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al guardar el cliente", e);
         }
     }
 
     @Override
-    public Cliente borrarPorId(Integer id) {
+    public boolean borrarPorId(Integer id) {
 
         try {
-            clienteRepository.deleteById(id);
-
-            return null;
+            if (clienteRepository.existsById(id)) {
+                clienteRepository.deleteById(id);
+            }
+            return true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al borrar el cliente con ID: " + id, e);
         }
     }
     @Override
