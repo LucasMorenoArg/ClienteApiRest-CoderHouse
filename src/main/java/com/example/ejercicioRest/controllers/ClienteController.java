@@ -3,6 +3,8 @@ package com.example.ejercicioRest.controllers;
 import com.example.ejercicioRest.entities.Cliente;
 import com.example.ejercicioRest.services.ClienteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -14,27 +16,55 @@ public class ClienteController {
     @Autowired
     private ClienteServiceImpl clienteService;
 
-    @GetMapping("/buscarPorId/{id}")
-    public Cliente buscar(@PathVariable int id){
+    @GetMapping("/buscarXId/{id}")
+    public ResponseEntity<?> buscar(@PathVariable int id) {
 
-       return clienteService.buscarPorId(id);
+        try {
+            return ResponseEntity.status(HttpStatus.OK).
+                    body(clienteService.buscarPorId(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body("{\"error\":\"Error.No se encontró registro.\"}");
+        }
     }
 
     @GetMapping("/calcular-edad/{id}")
-    public String calcularEdad(@PathVariable int id) {
+    public ResponseEntity<?> calcularEdad(@PathVariable int id) {
 
         try {
             LocalDate fechaHoy = LocalDate.now();
-            return clienteService.clienteEdad(fechaHoy, clienteService.buscarPorId(id).f_nacimiento);
+            return ResponseEntity.status(HttpStatus.OK).
+                    body(clienteService.clienteEdad(fechaHoy, clienteService.buscarPorId(id).f_nacimiento));
         } catch (DateTimeParseException e) {
-            return "Error: Formato de fecha de nacimiento inválido";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body("{\"error\":\"Error.Verificar datos.\"}");
+
         }
     }
 
     @PostMapping("/guardar")
-    public Cliente guardar(@RequestBody Cliente cliente){
+    public ResponseEntity<?> guardar(@RequestBody Cliente cliente) {
 
-       return clienteService.guardar(cliente);
+        try {
+            return ResponseEntity.status(HttpStatus.OK).
+                    body("Cliente creado correctamente " + "\n+" + clienteService.guardar(cliente));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body("{\"error\":\"Error.No se creó o actualizó el registro.\"}");
+        }
 
     }
-}
+    @DeleteMapping("/")
+    public ResponseEntity<?> borrarPorId(@PathVariable int id){
+
+        try {
+            return ResponseEntity.status(HttpStatus.OK).
+                    body(clienteService.borrarPorId(id) + "Operación finalizada");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                    body("{\"error\":\"Error.No se realizo el borrado.\"}");
+        }
+        }
+    }
+
