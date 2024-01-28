@@ -10,36 +10,32 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-public class ClienteServiceImpl implements ClienteService<Cliente> {
+public class ClienteServiceImpl implements ClienteService<Cliente>,ClienteEdad<String> {
 
     @Autowired
     private ClienteRepository clienteRepository;
 
 
-    @Override
-    public Cliente anios(LocalDate fhoy, String nacim) {
-        LocalDate nac = LocalDate.parse(nacim);
-        Duration dd = Duration.between(nac.atStartOfDay(), fhoy.atStartOfDay());
+    public Cliente buscarPorId(Integer id) {
 
-        if (dd.toDays() < 365) {
-            System.out.println("Menor a 1 año, igual a " + dd.toDays() + " dias de edad");
-        } else System.out.println("La edad es " + dd.toDays() / 365 + " años");
-        return null;
-    }
-
-
-    @Override
-    public Cliente buscarPorID(Integer id) {
         Optional<Cliente> personaOptional= clienteRepository.findById(id);
-
         return personaOptional.get();
 
     }
     @Override
     public Cliente guardar(Cliente entity) {
 
-
         return clienteRepository.save(entity);
 
+    }
+
+    @Override
+    public String clienteEdad(LocalDate fhoy, String nacim) {
+        LocalDate nac = LocalDate.parse(nacim);
+        Duration dd = Duration.between(nac.atStartOfDay(), fhoy.atStartOfDay());
+
+        if (dd.toDays() < 365) {
+            return "Menor a 1 año, igual a " + dd.toDays() + " dias de edad";
+        } else return "La edad es de " + dd.toDays() / 365 + " años";
     }
 }
