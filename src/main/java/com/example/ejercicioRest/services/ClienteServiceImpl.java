@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
@@ -48,20 +49,26 @@ public class ClienteServiceImpl implements ClienteService<Cliente>,ClienteEdad<S
             throw new RuntimeException(e);
         }
     }
-
     @Override
     public String clienteEdad(LocalDate fhoy, String nacim) {
         LocalDate nac = LocalDate.parse(nacim);
         Duration dd = Duration.between(nac.atStartOfDay(), fhoy.atStartOfDay());
 
         try {
-            if (dd.toDays() < 365) {
-                return "Menor a 1 año, igual a " + dd.toDays() + " dias de edad";
-            } else return "La edad es de " + dd.toDays() / 365 + " años";
+            LocalDate nacimiento = LocalDate.parse(nacim);
+
+            Period periodo = Period.between(nacimiento, fhoy);
+
+            if (periodo.getYears() < 1) {
+                return String.format("Menor a 1 año, igual a %d meses y %d días de edad",
+                        periodo.getMonths(), periodo.getDays());
+            } else {
+                return String.format("La edad es de %d años, %d meses y %d días",
+                        periodo.getYears(), periodo.getMonths(), periodo.getDays());
+            }
         } catch (DateTimeParseException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("Formato de fecha incorrecto. Debe ser en formato 'YYYY-MM-DD'.");
         }
+
     }
-
-
 }
