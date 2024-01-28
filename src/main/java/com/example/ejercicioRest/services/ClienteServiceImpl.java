@@ -19,22 +19,34 @@ public class ClienteServiceImpl implements ClienteService<Cliente>,ClienteEdad<S
 
     public Cliente buscarPorId(Integer id) {
 
-        Optional<Cliente> personaOptional= clienteRepository.findById(id);
-        return personaOptional.get();
+        try {
+            Optional<Cliente> personaOptional= clienteRepository.findById(id);
+            return personaOptional.get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
     @Override
     public Cliente guardar(Cliente entity) {
 
-        return clienteRepository.save(entity);
+        try {
+            return clienteRepository.save(entity);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Cliente borrarPorId(Integer id) {
 
-        clienteRepository.deleteById(id);
+        try {
+            clienteRepository.deleteById(id);
 
-        return null;
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
