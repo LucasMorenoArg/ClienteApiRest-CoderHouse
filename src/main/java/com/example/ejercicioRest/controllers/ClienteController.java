@@ -47,7 +47,7 @@ public class ClienteController {
 
         try {
             return ResponseEntity.status(HttpStatus.OK).
-                    body("Cliente creado correctamente " + "\n+" + clienteService.guardar(cliente));
+                    body("Cliente creado correctamente: " + "\n" + clienteService.guardar(cliente));
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).

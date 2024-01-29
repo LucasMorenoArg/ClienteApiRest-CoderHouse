@@ -58,10 +58,10 @@ public class ClienteServiceImpl implements ClienteService<Cliente>,ClienteEdad<S
             Period periodo = Period.between(nacimiento, fhoy);
 
             if (periodo.getYears() < 1) {
-                return String.format("Menor a 1 año, igual a %d meses y %d días de edad",
+                return String.format("Menor a 1 año, igual a %d meses y %d días de edad.",
                         periodo.getMonths(), periodo.getDays());
             } else {
-                return String.format("La edad es de %d años, %d meses y %d días",
+                return String.format("La edad es de %d años, %d meses y %d días.",
                         periodo.getYears(), periodo.getMonths(), periodo.getDays());
             }
         } catch (DateTimeParseException e) {
