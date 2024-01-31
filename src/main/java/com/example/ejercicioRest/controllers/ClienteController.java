@@ -57,7 +57,7 @@ public class ClienteController {
         }
 
     }
-    @DeleteMapping("/")
+    @DeleteMapping("/borrarCliente/{id}")
     public ResponseEntity<?> borrarPorId(@PathVariable int id){
 
         try {
